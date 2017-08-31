@@ -1,7 +1,6 @@
 extends layout
 
 block content
-  script(src="/javascripts/hb.js")
   script(src="/javascripts/waterfall.js")
   script.
     var socket = io.connect('/');
@@ -61,8 +60,6 @@ block content
       th Screenshot
       th Data
       th Node
-      th Targeting
-      th Exchanges
     each val in stored
       script.
         var rt = !{JSON.stringify(val.data.resourceTiming)};
@@ -75,15 +72,10 @@ block content
           td.timestamp
             <div id="timestamp-#{aindex}"><script>document.getElementById('timestamp-#{aindex}').innerHTML = (new Date(#{val.data.timestamp}))</script></div>
           td.geo #{val.data.geo}
-          td.targeting #{val.data.dfpTargetingKeys}
-          td
-            if val.data.resourceTiming.length > 0
-              each url in val.data.resourceTiming
-                <div id="url-#{aindex++}"> <script> var url = getBidderFromURL('#{url.name}');if(url){document.getElementById('url-#{aindex - 1}').innerHTML = url} </script></div>
       tr
-          td(colspan=6,onclick='toggle(\'waterfall-' + aindex + '\')',class="waterfall-row")
+          td(colspan=4,onclick='toggle(\'waterfall-' + aindex + '\')',class="waterfall-row")
             <div>Click to toggle Waterfall</div>
             <div class="waterfall-#{aindex} hide">
             <div>This waterfall uses same colors as WPT. Green is request, blue the response, and brown the TCP connect times. Completely gray bars are resources from other hostnames and so only have minimal timing information. Timing for a resource starts when the browser queues it up for fetching, so the gray at the start of bars is the time a browser is blocked waiting for a connection to become available.</div>
-            <div id="rt-#{aindex}"><script>waterfall(rt,document.getElementById('rt-#{aindex}'),document)</script></div>
+            <div id="rt-#{aindex}"><script>waterfall(rt,document.getElementById('rt-#{aindex++}'),document)</script></div>
             </div>
