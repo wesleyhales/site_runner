@@ -1,0 +1,90 @@
+extends layout
+
+block content
+  script(src="/javascripts/hb.js")
+  script(src="/javascripts/waterfall.js")
+  script.
+    var socket = io.connect('/');
+    socket.on('testComplete', function (data) {
+      console.log('Got announcement:', data);
+
+      var testResults = document.getElementById('testResultList');
+      var h4 = document.createElement("h4")
+      var newContent1 = document.createTextNode(data.url);
+      h4.appendChild(newContent1)
+      var newContent2 = document.createTextNode('I11C detected? ' + data.I11C);
+      var newContent3 = document.createTextNode('Timestamp: ' + new Date(data.timestamp));
+
+
+      var newLi = document.createElement('li');
+      if(data.I11C){newLi.className = 'working'}else{newLi.className = 'notworking'}
+
+      newLi.appendChild(h4)
+      var newDiv1 = document.createElement("div");
+      newDiv1.appendChild(newContent2);
+      newLi.appendChild(newDiv1);
+
+      var newDiv2 = document.createElement("div");
+      newDiv2.appendChild(newContent3);
+      newLi.appendChild(newDiv2);
+
+      var newImg = document.createElement("img");
+      newImg.className = 'screenshot';
+      newImg.src = 'data:image/png;base64,' + data.screenShotBase64;
+      newLi.appendChild(newImg);
+
+      testResults.appendChild(newLi)
+    });
+
+    function runNode (nodeName) {
+      var oReq = new XMLHttpRequest();
+      //oReq.addEventListener("load", reqListener);
+      oReq.onprogress = function(pe) {
+        if(pe.lengthComputable) {
+          document.getElementById('sfo').innerHTML = pe.total + '/' + pe.loaded;
+        }else{
+          document.getElementById('sfo').innerHTML = 'loading';
+        }
+      }
+      oReq.onloadend = function(pe) {
+        document.getElementById('sfo').innerHTML = oReq.responseText;
+      }
+      oReq.open('GET', '/' + nodeName);
+      oReq.send();
+    }
+
+  -function prettyDate(dateString){
+    -var date = new Date(dateString).toLocaleString();
+    -return date;
+  -}
+
+  -var aindex = 0
+  table#testResultList
+    tr
+      th URL
+      th Screenshot
+      th Data
+      th Node
+      th Targeting
+      th Exchanges
+    each val in stored
+      script.
+        var rt = !{JSON.stringify(val.data.resourceTiming)};
+      tr(class="tbl-row")
+          td
+            h4 #{val.data.url}
+          td
+            if val.image
+              img.screenshot(src='data:image/png;base64,' + val.image)
+          td.timestamp
+            <div id="timestamp-#{aindex}"><script>document.getElementById('timestamp-#{aindex}').innerHTML = (new Date(#{val.data.timestamp}))</script></div>
+          td.geo #{val.data.geo}
+          td.targeting #{val.data.dfpTargetingKeys}
+          td
+            if val.data.resourceTiming.length > 0
+              each url in val.data.resourceTiming
+                <div id="url-#{aindex++}"> <script> var url = getBidderFromURL('#{url.name}');if(url){document.getElementById('url-#{aindex - 1}').innerHTML = url} </script></div>
+      tr
+          td(colspan=6)
+            <div>This waterfall uses same colors as WPT. Green is request, blue the response, and brown the TCP connect times. Completely gray bars are resources from other hostnames and so only have minimal timing information. Timing for a resource starts when the browser queues it up for fetching, so the gray at the start of bars is the time a browser is blocked waiting for a connection to become available.</div>
+            <div id="rt-#{aindex}"><script>waterfall(rt,document.getElementById('rt-#{aindex}'),document)</script></div>

@@ -1,0 +1,52 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+.screenshot {
+  width: 200px;
+  transition: all .2s ease-in-out;
+}
+
+.screenshot:hover {
+  position: absolute;
+  top:auto;
+  left:auto;
+  width: auto;
+  transform: scale(1.1);
+}
+
+#testResultList {
+  width:100%
+}
+
+.working,
+.notworking {
+  padding: 5px;
+  margin: 10px;
+  border: 1px solid black;
+}
+
+.menu {
+  height: 51px;
+}
+
+.menuitem {
+  float:left;
+  list-style: none;
+  padding: 5px;
+  margin: 10px;
+  border: 1px solid black;
+}
+
+.notworking {
+  background-color: hotpink;
+}
+
+.working {
+  background-color: lightgreen;
+}

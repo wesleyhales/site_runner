@@ -1,0 +1,18 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='/socket.io/socket.io.js')
+
+  body
+    -var selected = 'home'; //default
+
+      ul.menu
+        each key in accounts
+          li.menuitem
+            if selected === key.name
+              a.selected(href='/?account=' + key.name, title=key.name)= key.name
+            else
+              a(href='/?account=' + key.name, title=key.name)= key.name
+    block content

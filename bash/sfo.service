@@ -1,0 +1,6 @@
+[Unit]
+Description=Run the suite for SFO
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/sh -c 'curl --user admin:supersecret http://159.203.167.69:3000/startTest?nodeName=sfo1-node'

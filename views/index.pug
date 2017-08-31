@@ -1,0 +1,35 @@
+extends layout
+
+block content
+  script.
+    var socket = io.connect('/');
+    socket.on('testComplete', function (data) {
+      console.log('Got announcement:', data);
+    });
+
+    function runNode (nodeName) {
+      var oReq = new XMLHttpRequest();
+      //oReq.addEventListener("load", reqListener);
+      oReq.onprogress = function(pe) {
+        if(pe.lengthComputable) {
+          document.getElementById('sfo').innerHTML = pe.total + '/' + pe.loaded;
+        }else{
+          document.getElementById('sfo').innerHTML = 'loading';
+        }
+      }
+      oReq.onloadend = function(pe) {
+        document.getElementById('sfo').innerHTML = oReq.responseText;
+      }
+      oReq.open('GET', '/' + nodeName);
+      oReq.send();
+    }
+
+    //http://107.170.68.218:4444/grid/api/hub
+
+  h1= title
+  p Welcome to siterunner
+  //- if !foo.testRunning
+    //- a(href="#sfo;", id="sfo", onclick="runNode('sfo')") Clear all results and start test suite over.
+  //- else
+    //- div SFO test node already running
+
