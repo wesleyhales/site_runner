@@ -51,7 +51,6 @@ exports.runTest = function(site,account,node){
     
     var ip = 0;
      
-  
     driver.wait(function () {
         return driver.executeScript('' +
           'if(performance.getEntriesByType("resource").length > 0){return performance.getEntriesByType("resource")}else{return false}' +
@@ -69,30 +68,6 @@ exports.runTest = function(site,account,node){
         if (err)
           console.log('________resource detection error: ' + err);
       });
-  
-    //google DFP targeting array
-    driver.wait(function () {
-      return driver.executeScript('' +
-        'var gpubads = false;' +
-        'if(googletag.pubads().getTargetingKeys().length >= 0){gpubads=true}else{gpubads=false};' +
-        'if(gpubads === false){return false}else{return googletag.pubads().getTargetingKeys()}').then(function (return_value) {
-        if(return_value === false){
-          return return_value;
-        }else{
-          testdata.dfpTargetingKeys = return_value;
-          return true
-        }
-      });
-    }, 5000, '\n Failed to find dfp targeting.').catch(function(e){
-      if (e.message.match("Timed out")){
-        console.log('________dfp targeting wait timed out: ' + e);
-      } else {
-        console.log('________dfp targeting detection error: ' + e);
-      }
-    }).then(null, function (err) {
-      if (err)
-        console.log('________dfp targeting detection error: ' + err);
-    });
     
     driver.takeScreenshot().catch(function(e){
         if (e.message.match("Timed out")){
