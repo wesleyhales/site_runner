@@ -12,17 +12,13 @@ block content
       var h4 = document.createElement("h4")
       var newContent1 = document.createTextNode(data.url);
       h4.appendChild(newContent1)
-      var newContent2 = document.createTextNode('I11C detected? ' + data.I11C);
       var newContent3 = document.createTextNode('Timestamp: ' + new Date(data.timestamp));
 
 
       var newLi = document.createElement('li');
       if(data.I11C){newLi.className = 'working'}else{newLi.className = 'notworking'}
 
-      newLi.appendChild(h4)
-      var newDiv1 = document.createElement("div");
-      newDiv1.appendChild(newContent2);
-      newLi.appendChild(newDiv1);
+      newLi.appendChild(h4);
 
       var newDiv2 = document.createElement("div");
       newDiv2.appendChild(newContent3);
@@ -85,6 +81,9 @@ block content
               each url in val.data.resourceTiming
                 <div id="url-#{aindex++}"> <script> var url = getBidderFromURL('#{url.name}');if(url){document.getElementById('url-#{aindex - 1}').innerHTML = url} </script></div>
       tr
-          td(colspan=6)
+          td(colspan=6,onclick='toggle(\'waterfall-' + aindex + '\')',class="waterfall-row")
+            <div>Click to toggle Waterfall</div>
+            <div class="waterfall-#{aindex} hide">
             <div>This waterfall uses same colors as WPT. Green is request, blue the response, and brown the TCP connect times. Completely gray bars are resources from other hostnames and so only have minimal timing information. Timing for a resource starts when the browser queues it up for fetching, so the gray at the start of bars is the time a browser is blocked waiting for a connection to become available.</div>
             <div id="rt-#{aindex}"><script>waterfall(rt,document.getElementById('rt-#{aindex}'),document)</script></div>
+            </div>

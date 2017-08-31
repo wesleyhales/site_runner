@@ -4,30 +4,31 @@ var webdriver = require('selenium-webdriver'),
   chrome = require('selenium-webdriver/chrome'),
   By = webdriver.By,
   until = webdriver.until,
-  SiteReport = require('../model/SiteReport.js'),
-  AllReports = require('../model/AllReports.js');
+  SiteReport = require('../model/SiteReport.js');
   const pool = require('../db');
 
 
 exports.runTest = function(site,account,node){
   var returnMessage = {};
   var options = new chrome.Options();
-  var logging_prefs = new webdriver.logging.Preferences();
+  
   // https://github.com/SeleniumHQ/selenium/wiki/Logging
+  var logging_prefs = new webdriver.logging.Preferences();
   logging_prefs.setLevel(webdriver.logging.Type.PERFORMANCE, webdriver.logging.Type.SERVER,webdriver.logging.Level.ALL);
   options.setLoggingPrefs(logging_prefs);
-  options.addArguments("--load-extension=/abp-latest");
   options.addArguments("--no-sandbox");
   
   var capabilities = {
     'applicationName' : node
   };
+  
+  var hubAddr = '165.227.123.79';
     
   var driver = new webdriver.Builder()
     .withCapabilities(capabilities)
     .forBrowser('chrome')
     .setChromeOptions(options)
-    .usingServer('http://198.199.115.13:4444/wd/hub')
+    .usingServer('http://' + hubAddr + ':4444/wd/hub')
     .build();
   
   console.log('_____adding test for ' + site + ' to node: ' + node);
@@ -41,68 +42,15 @@ exports.runTest = function(site,account,node){
   // });
   
   driver.manage().window().setSize(1280, 1280);
+
+  var testUrl = 'http://' + site,
+      testdata = {}, testimage = {};
   
-  var domainArray = site.split('.');
-  var domainSlashArray = site.split('/');
-  var testUrl = 'http://' + site;
-  var cookieDomain = site;
-  
-  if(domainArray.length >= 3){
-    // testUrl = 'http://www.' + site;
-    cookieDomain = domainArray[domainArray.length - 2] + '.' + domainArray[domainArray.length - 1];
-  }else if(domainSlashArray.length > 0){
-    cookieDomain = domainSlashArray[0];
-  }
-  
-  var testdata = {}, testimage = {};
-  
-  driver.get(testUrl).catch(function(e){
-      console.log('________Issue in the initial get: ' + e);
-      testdata.I11C = false;
-  }).then(function() {
-// set a cookie on the current domain
-    if(countDots = 3){
-      // site split to tld
-    }
-    
-    driver.manage().addCookie({
-      name: "magicMorph",
-      value: "foo",
-      path: "/",
-      domain: "." + cookieDomain//,
-      // expiry: Date.UTC(2018, 08, 30) / 1000
-    }).catch(function(e){
-      console.log('________Issue setting cookie: ' + e);
-      testdata.I11C = false;
-    });
-    
-  })
    // get a page with the cookie
    returnMessage = driver.get(testUrl).then(function() {
     
     var ip = 0;
-    
-    driver.wait(function () {
-      return driver.executeScript('' +
-        'if(window.I11C){return (window.I11C.Morph && window.I11C.Morph === 1)}else{return false}' +
-        '').then(function (return_value) {
-        if(return_value){
-          testdata.I11C = true;
-        }
-        return return_value;
-      });
-    }, 15000, '\n Failed to find I11C.').catch(function(e){
-      if (e.message.match("Timed out")){
-        console.log('________I11C wait timed out: ' + e);
-      } else {
-        console.log('________I11C detection error: ' + e);
-        testdata.I11C = false;
-        testdata.timedout = true;
-      }
-    }).then(null, function (err) {
-      if (err)
-        testdata.I11C = false;
-    });
+     
   
     driver.wait(function () {
         return driver.executeScript('' +
@@ -115,34 +63,12 @@ exports.runTest = function(site,account,node){
             return return_value;
           }
         });
-      }, 5000, '\n Failed to resources.').catch(function(e){
+      }, 30000, '\n Failed to resources.').catch(function(e){
           console.log('________resource detection error: ' + e);
       }).then(null, function (err) {
         if (err)
           console.log('________resource detection error: ' + err);
       });
-  
-    // driver.wait(function () {
-    //   return driver.executeScript('' +
-    //     'var isAmazon = false;for(var entry in performance.getEntriesByType("resource")){' +
-    //     'if(performance.getEntriesByType("resource")[entry].name.indexOf("amazon-adsystem.com") >= 0){isAmazon = true;break}' +
-    //     '}return isAmazon').then(function (return_value) {
-    //     if(return_value){
-    //       testdata.amazon = true;
-    //     }
-    //     return return_value;
-    //   });
-    // }, 5000, '\n Failed to find amazon.').catch(function(e){
-    //   if (e.message.match("Timed out")){
-    //     console.log('________amazon wait timed out: ' + e);
-    //   } else {
-    //     console.log('________amazon detection error: ' + e);
-    //     testdata.amazon = false;
-    //   }
-    // }).then(null, function (err) {
-    //   if (err)
-    //     testdata.amazon = false;
-    // });
   
     //google DFP targeting array
     driver.wait(function () {
@@ -193,7 +119,7 @@ exports.runTest = function(site,account,node){
     driver.close();
     
     
-  })//driver.get 2
+  })
   
   return returnMessage;
   

@@ -26,9 +26,19 @@ a {
 
 .working,
 .notworking {
+
+}
+
+.tbl-row {
   padding: 5px;
   margin: 10px;
   border: 1px solid black;
+  background-color: silver;
+}
+
+.waterfall-row {
+  height:20px;
+  background-color: #c8def4;
 }
 
 .menu {
@@ -49,4 +59,12 @@ a {
 
 .working {
   background-color: lightgreen;
+}
+
+.hide {
+  display:none;
+}
+
+.show {
+  display: block;
 }

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var sr = require('../selenium/siterunner-step2');
+var sr = require('../selenium/siterunner');
 var SiteReport = require('../model/SiteReport.js');
 var AllReports = require('../model/AllReports.js');
 var AllSites = require('../model/AllSites.js');
