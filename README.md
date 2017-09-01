@@ -28,15 +28,6 @@ run 'docker swarm join-token worker' from the hub instance.
 ```
 docker swarm join --token [token] [ip]:[port]
 ```
-* Add the latest AdBlock Plus extension for Chrome to this (and all future) nodes. There are 2 ways to 
-share a data volume with docker (mount and bind). We are using bind in our commands so the extension has to be on each machine running a selenium node.
-```
-LATEST_ABP=$(curl https://downloads.adblockplus.org/devbuilds/adblockpluschrome/ | tac | tac | grep '.crx' -m 1 | awk -F'[-;]' '{print $2}' | sed -e 's/\".*$//') &&
-curl -O "https://downloads.adblockplus.org/devbuilds/adblockpluschrome/adblockpluschrome-$LATEST_ABP" &&
-rm -rf abp-latest &&
-unzip "adblockpluschrome-$LATEST_ABP" -d abp-latest &&
-chmod -R 777 abp-latest/*
-```
 * You can leave this session open as you'll need it again in a moment to review the logs.
 
 ### Step 3
@@ -116,7 +107,7 @@ curl http://159.203.167.69:3000/startTest?nodeName=sfo1-node
   * https://github.com/nicegraham/selenium-grid2-api
   * https://stackoverflow.com/questions/41983811/api-for-getting-the-selenium-nodes-status-from-the-grid-host
 
-#### Examples
+#### Notes/Examples
 ```
 ##need to increase Browser_Timeout from 5 seconds to 30 for org.apache.http.NoHttpResponseException http://hub:4444
 
@@ -130,7 +121,6 @@ https://coreos.com/os/docs/latest/scheduling-tasks-with-systemd-timers.html
 rm -rf 1.0.0/ && unzip Archive.zip -d 1.0.0 && cd 1.0.0 && docker build -t wesleyhales/sitemonitor .&& docker run -p 3000:3000 --link siterunner_pg:postgres -d wesleyhales/sitemonitor
 
 DROP TABLE timingdata;
-
 INSERT INTO timingdata (data) VALUES ('{"1":{"foo":"bar"}}'::jsonb);
 SELECT * FROM timingdata WHERE data = '{"property":"bonnier"}';
 
