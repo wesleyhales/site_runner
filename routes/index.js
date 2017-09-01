@@ -32,7 +32,6 @@ router.get('/startTest', function(req, res, next) {
           console.log('________sr main thread error: ' + e);
         }).then(function(obj) {
           SiteReport.count++;
-          console.log('--unblocking?- ' + SiteReport.testdata.I11C);
           
           pool.query('INSERT INTO timingdata (data,image) VALUES ($1::jsonb,$2::text);', [SiteReport.testdata, SiteReport.testimage], function(err, res) {
             if(err) {

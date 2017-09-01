@@ -11,22 +11,17 @@ block content
       var h4 = document.createElement("h4")
       var newContent1 = document.createTextNode(data.url);
       h4.appendChild(newContent1)
-      var newContent3 = document.createTextNode('Timestamp: ' + new Date(data.timestamp));
+      var newContent3 = document.createTextNode('Test Complete: ' + new Date(data.timestamp));
 
 
       var newLi = document.createElement('li');
-      if(data.I11C){newLi.className = 'working'}else{newLi.className = 'notworking'}
+      newLi.className = 'working'
 
       newLi.appendChild(h4);
 
       var newDiv2 = document.createElement("div");
       newDiv2.appendChild(newContent3);
       newLi.appendChild(newDiv2);
-
-      var newImg = document.createElement("img");
-      newImg.className = 'screenshot';
-      newImg.src = 'data:image/png;base64,' + data.screenShotBase64;
-      newLi.appendChild(newImg);
 
       testResults.appendChild(newLi)
     });

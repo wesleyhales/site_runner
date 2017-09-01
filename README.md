@@ -78,8 +78,8 @@ docker start siterunner_pg
 ```
 * [need a docker image for this] Start the server
 ```
-docker build -t wesleyhales/sitemonitor .
-docker run -p 3000:3000 --link siterunner_pg:postgres -d wesleyhales/sitemonitor
+docker build -t wesleyhales/site_runner .
+docker run -p 3000:3000 --link siterunner_pg:postgres -d wesleyhales/site_runner
 ```
 
 #### Create database table

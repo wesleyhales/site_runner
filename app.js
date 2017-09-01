@@ -11,11 +11,11 @@ var users = require('./routes/users');
 
 var app = express();
 
-app.use(basicAuth({
-  users: { 'admin': 'supersecret' },
-  challenge: true,
-  realm: '#L##T'
-}))
+// app.use(basicAuth({
+//   users: { 'admin': 'supersecret' },
+//   challenge: true,
+//   realm: '#L##T'
+// }))
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

@@ -62,7 +62,7 @@ exports.runTest = function(site,account,node){
             return return_value;
           }
         });
-      }, 30000, '\n Failed to resources.').catch(function(e){
+      }, 15000, '\n Failed to resources.').catch(function(e){
           console.log('________resource detection error: ' + e);
       }).then(null, function (err) {
         if (err)
@@ -88,14 +88,11 @@ exports.runTest = function(site,account,node){
         SiteReport.testimage = image;
       }
     );
-    
-    //AllReports.testdataList.push(testdata);
   
     driver.close();
-    
     
   })
   
   return returnMessage;
   
-}//end if
+}
