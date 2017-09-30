@@ -68,6 +68,8 @@ block content
             <div id="timestamp-#{aindex}"><script>document.getElementById('timestamp-#{aindex}').innerHTML = (new Date(#{val.data.timestamp}))</script></div>
           td.geo #{val.data.geo}
       tr
+          td(colspan=4,class=val.data.vulnDetected ? "red" : "") Vulnerable?... #{val.data.vulnDetected}
+      tr
           td(colspan=4,onclick='toggle(\'waterfall-' + aindex + '\')',class="waterfall-row")
             <div>Click to toggle Waterfall</div>
             <div class="waterfall-#{aindex} hide">

@@ -68,3 +68,9 @@ a {
 .show {
   display: block;
 }
+
+.red {
+  background-color: red;
+  color: yellow;
+  font-weight: bold;
+}

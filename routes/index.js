@@ -1,14 +1,32 @@
 var express = require('express');
 var router = express.Router();
-var sr = require('../selenium/siterunner');
+var sr = require('../selenium/crawl-search');
 var SiteReport = require('../model/SiteReport.js');
 var AllReports = require('../model/AllReports.js');
 var AllSites = require('../model/AllSites.js');
 const pool = require('../db');
 
 
-var availableNodes = ['ny3-node'];
+var availableNodes = ['local-node'];
 
+
+function oneOffTest(url, name, runtype, node) {
+  
+  var foo = sr.runTest(url, name, runtype, node);
+  
+  foo.catch(function(e){
+    console.log('________sr oneoff main thread error: ' + e);
+  }).then(function(obj) {
+    
+    pool.query('INSERT INTO timingdata (data,image) VALUES ($1::jsonb,$2::text);', [SiteReport.testdata, SiteReport.testimage], function(err, res) {
+      if(err) {
+        return console.error('error running query', err);
+      }
+      console.log('test data inserted!');
+    });
+    
+  });
+};
 
 router.get('/startTest', function(req, res, next) {
   SiteReport.testRunning = true;
@@ -26,11 +44,22 @@ router.get('/startTest', function(req, res, next) {
     
       filteredArray = customerData.live.length;
       for (var site in customerData.live) {
-        var foo = sr.runTest(customerData.live[site],customerData.name, req.query.nodeName);
+        var foo = sr.runTest(customerData.live[site],customerData.name, 'parent', req.query.nodeName);
         
         foo.catch(function(e){
           console.log('________sr main thread error: ' + e);
         }).then(function(obj) {
+          
+          //check to see if this is part of a crawl
+          var allCrawlableDomains = SiteReport.testdata.allCrawlableDomains;
+          if(allCrawlableDomains.length > 0){
+            allCrawlableDomains.forEach(function(url){
+              console.log(1,url);
+              url = url.replace('https://','').replace('http://','');
+              oneOffTest(url, customerData.name, 'oneoff', req.query.nodeName)
+            })
+          }
+          
           SiteReport.count++;
           
           pool.query('INSERT INTO timingdata (data,image) VALUES ($1::jsonb,$2::text);', [SiteReport.testdata, SiteReport.testimage], function(err, res) {

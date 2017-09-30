@@ -8,8 +8,8 @@ var config = {
   user: 'postgres', //env var: PGUSER
   database: 'siterunner', //env var: PGDATABASE
   password: 'mysecretpassword', //env var: PGPASSWORD
-  host: 'siterunner_pg', // Server hosting the postgres database (inside swarm)
-  // host: '0.0.0.0', // Server hosting the postgres database local
+  // host: 'siterunner_pg', // Server hosting the postgres database (inside swarm)
+  host: '0.0.0.0', // Server hosting the postgres database local
   port: 5432, //env var: PGPORT
   max: 10, // max number of clients in the pool
   idleTimeoutMillis: 30000, // how long a client is allowed to remain idle before being closed

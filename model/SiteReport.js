@@ -14,7 +14,9 @@ var SiteReport = module.exports = {
     amazon: false,
     dfpTargetingKeys: '',
     geo: '',
-    resourceTiming: []
+    resourceTiming: [],
+    formList: [],
+    vulnDetected: false
   },
   io: {}
 }
